@@ -75,7 +75,7 @@ LWP::Protocol::PSGI - Override HTTP/HTTPS backend with your own PSGI applciation
 
   LWP::Protocol::PSGI->register($psgi_app);
 
-  # can hijack any code that uses LWP::UserAgent underneath
+  # can hijack any code that uses LWP::UserAgent underneath, with no changes
   my $ua  = LWP::UserAgent->new;
   my $res = $ua->get("http://www.google.com/search?q=bar");
   print $res->content; # "googling bar"
@@ -141,6 +141,6 @@ it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
-L<Plack::Client>
+L<Plack::Client> L<LWP::UserAgent>
 
 =cut
