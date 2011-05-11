@@ -7,6 +7,7 @@ our $VERSION = '0.01';
 use parent qw(LWP::Protocol);
 use HTTP::Message::PSGI qw( req_to_psgi res_from_psgi );
 use Guard;
+use Carp;
 
 my @protocols = qw( http https );
 my %orig;
@@ -18,8 +19,12 @@ sub register {
     $app = shift;
 
     for my $proto (@protocols) {
-        $orig{$proto} ||= LWP::Protocol::implementor($proto);
-        LWP::Protocol::implementor($proto, $class);
+        if (my $orig = LWP::Protocol::implementor($proto)) {
+            $orig{$proto} = $orig;
+            LWP::Protocol::implementor($proto, $class);
+        } else {
+            Carp::carp("LWP::Protocol::$proto is unavailable. Skip registering overrides for it.") if $^W;
+        }
     }
 
     if (defined wantarray) {
@@ -30,7 +35,9 @@ sub register {
 sub unregister {
     my $class = shift;
     for my $proto (@protocols) {
-        LWP::Protocol::implementor($proto, $orig{$proto});
+        if ($orig{$proto}) {
+            LWP::Protocol::implementor($proto, $orig{$proto});
+        }
     }
 }
 
