@@ -18,18 +18,19 @@ SYNOPSIS
 
       LWP::Protocol::PSGI->register($psgi_app);
 
-      # can hijack any code that uses LWP::UserAgent underneath, with no changes
+      # can hijack any code or module that uses LWP::UserAgent underneath, with no changes
       my $ua  = LWP::UserAgent->new;
       my $res = $ua->get("http://www.google.com/search?q=bar");
       print $res->content; # "googling bar"
 
 DESCRIPTION
-    LWP::Protocol::PSGI is a module to hijack *ANY* code that uses
+    LWP::Protocol::PSGI is a module to hijack any code that uses
     LWP::UserAgent underneath such that any HTTP or HTTPS requests can be
     routed to your own PSGI application.
 
     Because it works with any code that uses LWP, you can override various
-    WWW::/Net::/WebService:: modules such as WWW::Mechanize.
+    WWW::*, Net::* or WebService::* modules such as WWW::Mechanize, without
+    modifying the calling code or its internals.
 
       use WWW::Mechanize;
       use LWP::Protocol::PSGI;
