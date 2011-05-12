@@ -24,7 +24,7 @@ my $psgi_app = sub {
     is $res->header('X-Foo'), "bar";
 
     use LWP::Simple;
-    my $body = get "https://www.google.com/?q=x";
+    my $body = get "http://www.google.com/?q=x";
     is $body, "query=q=x";
 }
 
