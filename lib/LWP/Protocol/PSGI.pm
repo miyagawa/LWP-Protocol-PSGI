@@ -113,7 +113,7 @@ the override when it goes out of context.
 
   {
       my $guard = LWP::Protocol::PSGI->register($app);
-      # code that uses LWP
+      # hijack the code using LWP with $app
   }
 
   # now LWP uses the original HTTP implementations
