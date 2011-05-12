@@ -2,7 +2,7 @@ package LWP::Protocol::PSGI;
 
 use strict;
 use 5.008_001;
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use parent qw(LWP::Protocol);
 use HTTP::Message::PSGI qw( req_to_psgi res_from_psgi );
