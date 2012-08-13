@@ -16,12 +16,20 @@ SYNOPSIS
           dance;
       };
 
+      # Register the $psgi_app to handle all LWP requests
       LWP::Protocol::PSGI->register($psgi_app);
 
       # can hijack any code or module that uses LWP::UserAgent underneath, with no changes
       my $ua  = LWP::UserAgent->new;
       my $res = $ua->get("http://www.google.com/search?q=bar");
       print $res->content; # "googling bar"
+
+      # Only hijacks specific hosts
+      LWP::Protocol::PSGI->register($psgi_app, host => 'localhost:3000');
+
+      my $ua = LWP::UserAgent->new;
+      $ua->get("http://localhost:3000/app"); # this routes $psgi_app
+      $ua->get("http://google.com/api");     # this doesn't - handled with actual HTTP requests
 
 DESCRIPTION
     LWP::Protocol::PSGI is a module to hijack any code that uses
@@ -42,8 +50,8 @@ DESCRIPTION
 
 METHODS
     register
-          LWP::Protocol::PSGI->register($app);
-          my $guard = LWP::Protocol::PSGI->register($app);
+          LWP::Protocol::PSGI->register($app, %options);
+          my $guard = LWP::Protocol::PSGI->register($app, %options);
 
         Registers an override hook to hijack HTTP requests. If called in a
         non-void context, returns a Guard object that automatically resets
@@ -55,6 +63,20 @@ METHODS
           }
 
           # now LWP uses the original HTTP implementations
+
+        When %options is specified, the option limits which URL and hosts
+        this handler overrides. You can either pass "host" or "uri" to match
+        requests, and if it doesn't match, the handler falls back to the
+        original LWP HTTP protocol implementor.
+
+          LWP::Protocol::PSGI->register($app, host => 'www.google.com');
+          LWP::Protocol::PSGI->register($app, host => qr/\.google\.com$/);
+          LWP::Protocol::PSGI->register($app, uri => sub { my $uri = shift; ... });
+
+        The options can take eithe a string, where it does a complete match,
+        a regular expression or a subroutine reference that returns boolean
+        given the value of "host" (only the hostname) or "uri" (the whole
+        URI, including query parameters).
 
     unregister
           LWP::Protocol::PSGI->unregister;
