@@ -11,12 +11,15 @@ use Carp;
 
 my @protocols = qw( http https );
 my %orig;
+my %options;
 
 my $app;
 
 sub register {
     my $class = shift;
     $app = shift;
+
+    %options = @_;
 
     for my $proto (@protocols) {
         if (my $orig = LWP::Protocol::implementor($proto)) {
@@ -28,7 +31,7 @@ sub register {
     }
 
     if (defined wantarray) {
-        return guard { $class->unregister };
+        return guard { $class->unregister; %options = () };
     }
 }
 
@@ -43,8 +46,45 @@ sub unregister {
 
 sub request {
     my($self, $request) = @_;
-    my $env = req_to_psgi $request;
-    res_from_psgi $app->($env);
+
+    if ($self->handles($request)) {
+        my $env = req_to_psgi $request;
+        res_from_psgi $app->($env);
+    } else {
+        $orig{$self->{scheme}}->new($self->{scheme}, $self->{ua})->request($request);
+    }
+}
+
+# for testing
+sub create {
+    my($class, %opt) = @_;
+    %options = %opt;
+    $class->new;
+}
+
+sub handles {
+    my($self, $request) = @_;
+
+    if ($options{host}) {
+        $self->_matcher($options{host})->($request->uri->host);
+    } elsif ($options{uri}) {
+        $self->_matcher($options{uri})->($request->uri);
+    } else {
+        1;
+    }
+}
+
+sub _matcher {
+    my($self, $stuff) = @_;
+    if (ref $stuff eq 'Regexp') {
+        sub { $_[0] =~ $stuff };
+    } elsif (ref $stuff eq 'CODE') {
+        $stuff;
+    } elsif (!ref $stuff) {
+        sub { $_[0] eq $stuff };
+    } else {
+        croak "Don't know how to match: ", ref $stuff;
+    }
 }
 
 1;
@@ -73,12 +113,20 @@ LWP::Protocol::PSGI - Override LWP's HTTP/HTTPS backend with your own PSGI applc
       dance;
   };
 
+  # Register the $psgi_app to handle all LWP requests
   LWP::Protocol::PSGI->register($psgi_app);
 
   # can hijack any code or module that uses LWP::UserAgent underneath, with no changes
   my $ua  = LWP::UserAgent->new;
   my $res = $ua->get("http://www.google.com/search?q=bar");
   print $res->content; # "googling bar"
+
+  # Only hijacks specific hosts
+  LWP::Protocol::PSGI->register($psgi_app, host => 'localhost:3000');
+
+  my $ua = LWP::UserAgent->new;
+  $ua->get("http://localhost:3000/app"); # this routes $psgi_app
+  $ua->get("http://google.com/api");     # this doesn't - handled with actual HTTP requests
 
 =head1 DESCRIPTION
 
@@ -104,8 +152,8 @@ without modifying the calling code or its internals.
 
 =item register
 
-  LWP::Protocol::PSGI->register($app);
-  my $guard = LWP::Protocol::PSGI->register($app);
+  LWP::Protocol::PSGI->register($app, %options);
+  my $guard = LWP::Protocol::PSGI->register($app, %options);
 
 Registers an override hook to hijack HTTP requests. If called in a
 non-void context, returns a L<Guard> object that automatically resets
@@ -117,6 +165,20 @@ the override when it goes out of context.
   }
 
   # now LWP uses the original HTTP implementations
+
+When C<%options> is specified, the option limits which URL and hosts
+this handler overrides. You can either pass C<host> or C<uri> to match
+requests, and if it doesn't match, the handler falls back to the
+original LWP HTTP protocol implementor.
+
+  LWP::Protocol::PSGI->register($app, host => 'www.google.com');
+  LWP::Protocol::PSGI->register($app, host => qr/\.google\.com$/);
+  LWP::Protocol::PSGI->register($app, uri => sub { my $uri = shift; ... });
+
+The options can take eithe a string, where it does a complete match, a
+regular expression or a subroutine reference that returns boolean
+given the value of C<host> (only the hostname) or C<uri> (the whole
+URI, including query parameters).
 
 =item unregister
 

@@ -28,5 +28,32 @@ my $psgi_app = sub {
     is $body, "query=q=x";
 }
 
+{
+    my $g = LWP::Protocol::PSGI->register($psgi_app, host => 'www.google.com');
+    my $ua  = LWP::UserAgent->new;
+    my $res = $ua->get("http://www.google.com/search?q=bar");
+    is $res->content, "query=q=bar";
+}
+
+sub test_match {
+    my($uri, %options) = @_;
+    my $p = LWP::Protocol::PSGI->create(%options);
+    $p->handles(HTTP::Request->new(GET => $uri));
+}
+
+ok( test_match 'http://www.google.com/', host => 'www.google.com' );
+ok( test_match 'https://www.google.com/', host => 'www.google.com' );
+ok( test_match 'https://www.google.com/', host => qr/\.google.com/ );
+ok( test_match 'https://www.google.com/', host => sub { $_[0] eq 'www.google.com' } );
+
+ok( !test_match 'http://www.google.com/', host => 'google.com' );
+ok( !test_match 'https://www.apple.com/', host => qr/\.google.com/ );
+ok( !test_match 'https://google.com/', host => sub { $_[0] eq 'www.google.com' } );
+
+ok( test_match 'http://www.google.com/', uri => 'http://www.google.com/' );
+ok( test_match 'https://www.google.com/search?q=bar', uri => 'https://www.google.com/search?q=bar' );
+ok( test_match 'https://www.google.com/search', uri => qr/\.google.com/ );
+ok( test_match 'https://www.google.com/', uri => sub { $_[0] =~ /www.google.com/ } );
+
 done_testing;
 
