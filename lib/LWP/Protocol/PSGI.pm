@@ -189,6 +189,10 @@ described above, it will be automatically called for you.
 
 =back
 
+=head1 SEE ALSO
+
+L<Test::LWP::UserAgent>
+
 =head1 AUTHOR
 
 Tatsuhiko Miyagawa E<lt>miyagawa@bulknews.netE<gt>
