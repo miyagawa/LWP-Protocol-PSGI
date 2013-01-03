@@ -175,7 +175,7 @@ original LWP HTTP protocol implementor.
   LWP::Protocol::PSGI->register($app, host => qr/\.google\.com$/);
   LWP::Protocol::PSGI->register($app, uri => sub { my $uri = shift; ... });
 
-The options can take eithe a string, where it does a complete match, a
+The options can take either a string, where it does a complete match, a
 regular expression or a subroutine reference that returns boolean
 given the value of C<host> (only the hostname) or C<uri> (the whole
 URI, including query parameters).
