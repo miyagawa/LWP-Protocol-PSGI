@@ -1,5 +1,8 @@
 Revision history for Perl extension LWP::Protocol::PSGI
 
+0.04  Thu Jan  3 14:44:31 PST 2013
+        - Documentation changes, no code changes
+
 0.03  Sun Aug 12 20:51:48 PDT 2012
         - Added options to allow limiting overrides, so that PSGI apps that uses LWP
           can safely use them without being affected #1
