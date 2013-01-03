@@ -189,6 +189,40 @@ described above, it will be automatically called for you.
 
 =back
 
+=head1 DIFFERENCES WITH OTHER MODULES
+
+=head2 Mock vs Protocol handlers
+
+There are similar modules on CPAN that allows you to emulate LWP
+requests and responses. Most of them are implemented as a mock
+library, which means it doesn't go through the LWP guts and just gives
+you a wrapper for receiving HTTP::Request and returning HTTP::Response
+back.
+
+LWP::Protocol::PSGI is implemented as an LWP protocol handler and it
+allows you to use most of the LWP extensions to add capabilities such
+as manipulating headers and parsing cookies.
+
+=head2 Test::LWP::UserAgent
+
+L<Test::LWP::UserAgent> has the similar concept of overriding LWP
+request method with particular PSGI applications. The module has more
+features and options such as passing through the requests to the
+native LWP handler, while this module only allows to map certain hosts
+and ports.
+
+Test::LWP::UserAgent requires you to change the instantiation of
+UserAgent from C<< LWP::UserAgent->new >> to C<< Test::LWP::UserAgent
+>> somehow. While it might not be difficult if the creation is done in
+one place in your code base, it might be hard or even impossible when
+you are dealing with third party modules that calls LWP::UserAgent
+inside.
+
+LWP::Protocol::PSGI affects the LWP calling code more globally, while
+having an option to enable it only in a specific block, there's no
+need to change the UserAgent object manually, whether it is in your
+code or CPAN modules.
+
 =head1 AUTHOR
 
 Tatsuhiko Miyagawa E<lt>miyagawa@bulknews.netE<gt>
