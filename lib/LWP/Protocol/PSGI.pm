@@ -212,15 +212,17 @@ native LWP handler, while this module only allows to map certain hosts
 and ports.
 
 Test::LWP::UserAgent requires you to change the instantiation of
-UserAgent from C<< LWP::UserAgent->new >> to C<< Test::LWP::UserAgent
->> somehow. While it might not be difficult if the creation is done in
-one place in your code base, it might be hard or even impossible when
-you are dealing with third party modules that calls LWP::UserAgent
-inside.
+UserAgent from C<< LWP::UserAgent->new >> to C<<
+Test::LWP::UserAgent->new >> somehow and it's your responsibility to
+do so. This mechanism gives you more control which requests should go
+through the PSGI app, and it might not be difficult if the creation is
+done in one place in your code base. However it might be hard or even
+impossible when you are dealing with third party modules that calls
+LWP::UserAgent inside.
 
 LWP::Protocol::PSGI affects the LWP calling code more globally, while
-having an option to enable it only in a specific block, there's no
-need to change the UserAgent object manually, whether it is in your
+having an option to enable it only in a specific block, thus there's
+no need to change the UserAgent object manually, whether it is in your
 code or CPAN modules.
 
 =head1 AUTHOR
