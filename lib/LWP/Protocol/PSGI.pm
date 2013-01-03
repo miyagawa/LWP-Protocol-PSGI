@@ -206,9 +206,9 @@ as manipulating headers and parsing cookies.
 =head2 Test::LWP::UserAgent
 
 L<Test::LWP::UserAgent> has the similar concept of overriding LWP
-request method with particular PSGI applications. The module has more
-features and options such as passing through the requests to the
-native LWP handler, while this module only allows to map certain hosts
+request method with particular PSGI applications. It has more features
+and options such as passing through the requests to the native LWP
+handler, while LWP::Protocol::PSGI only allows to map certain hosts
 and ports.
 
 Test::LWP::UserAgent requires you to change the instantiation of
