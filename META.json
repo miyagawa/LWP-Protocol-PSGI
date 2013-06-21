@@ -1,0 +1,72 @@
+{
+   "abstract" : "Override LWP's HTTP/HTTPS backend with your own PSGI applciation",
+   "author" : [
+      "Tatsuhiko Miyagawa <miyagawa@bulknews.net>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Milla version v1.0.2, Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.131560",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "LWP-Protocol-PSGI",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "inc",
+         "share",
+         "eg",
+         "examples"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.59",
+            "Test::More" : "0.88",
+            "Test::Requires" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build::Tiny" : "0.023"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Test::Pod" : "1.41"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Guard" : "0",
+            "HTTP::Message::PSGI" : "0",
+            "LWP" : "5",
+            "LWP::Protocol" : "0",
+            "parent" : "0",
+            "perl" : "5.008001"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/miyagawa/LWP-Protocol-PSGI/issues"
+      },
+      "homepage" : "https://github.com/miyagawa/LWP-Protocol-PSGI",
+      "repository" : {
+         "type" : "git",
+         "url" : "https://github.com/miyagawa/LWP-Protocol-PSGI.git",
+         "web" : "https://github.com/miyagawa/LWP-Protocol-PSGI"
+      }
+   },
+   "version" : "0.04",
+   "x_contributors" : [
+      "Daisuke Maki <lestrrat+github@gmail.com>"
+   ]
+}
+
