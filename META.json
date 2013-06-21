@@ -63,9 +63,10 @@
          "web" : "https://github.com/miyagawa/LWP-Protocol-PSGI"
       }
    },
-   "version" : "0.05",
+   "version" : "0.06",
    "x_contributors" : [
-      "Daisuke Maki <lestrrat+github@gmail.com>"
+      "Daisuke Maki <lestrrat+github@gmail.com>",
+      "Syohei YOSHIDA <syohex@gmail.com>"
    ]
 }
 

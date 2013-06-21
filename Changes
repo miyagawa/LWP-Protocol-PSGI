@@ -2,6 +2,9 @@ Revision history for Perl extension LWP::Protocol::PSGI
 
 {{$NEXT}}
 
+0.06  2013-06-21 00:32:11 PDT
+        - Fix unnecessary dependency (syohex)
+
 0.05  2013-06-20 20:54:13 PDT
         - Support mounting multiple apps with different hosts (lestrrat)
 
