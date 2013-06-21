@@ -24,13 +24,6 @@
       ]
    },
    "prereqs" : {
-      "build" : {
-         "requires" : {
-            "ExtUtils::MakeMaker" : "6.59",
-            "Test::More" : "0.88",
-            "Test::Requires" : "0"
-         }
-      },
       "configure" : {
          "requires" : {
             "Module::Build::Tiny" : "0.023"
@@ -50,6 +43,12 @@
             "parent" : "0",
             "perl" : "5.008001"
          }
+      },
+      "test" : {
+         "requires" : {
+            "Test::More" : "0.88",
+            "Test::Requires" : "0"
+         }
       }
    },
    "release_status" : "stable",
@@ -64,7 +63,7 @@
          "web" : "https://github.com/miyagawa/LWP-Protocol-PSGI"
       }
    },
-   "version" : "0.04",
+   "version" : "0.05",
    "x_contributors" : [
       "Daisuke Maki <lestrrat+github@gmail.com>"
    ]

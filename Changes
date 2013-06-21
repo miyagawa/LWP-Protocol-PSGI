@@ -2,6 +2,9 @@ Revision history for Perl extension LWP::Protocol::PSGI
 
 {{$NEXT}}
 
+0.05  2013-06-20 20:54:13 PDT
+        - Support mounting multiple apps with different hosts (lestrrat)
+
 0.04  Thu Jan  3 14:44:31 PST 2013
         - Documentation changes, no code changes
 
