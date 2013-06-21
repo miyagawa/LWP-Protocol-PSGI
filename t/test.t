@@ -1,5 +1,4 @@
 use strict;
-use Carp::Always;
 use Test::More;
 use LWP::UserAgent;
 use LWP::Protocol::PSGI;
