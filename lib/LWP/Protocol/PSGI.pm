@@ -11,29 +11,47 @@ use Carp;
 
 my @protocols = qw( http https );
 my %orig;
-my %options;
 
-my $app;
+my @apps;
 
 sub register {
     my $class = shift;
-    $app = shift;
 
-    %options = @_;
+    my $app = LWP::Protocol::PSGI::App->new(@_);
+    unshift @apps, $app;
 
-    for my $proto (@protocols) {
-        if (my $orig = LWP::Protocol::implementor($proto)) {
-            $orig{$proto} = $orig;
-            LWP::Protocol::implementor($proto, $class);
-        } else {
-            Carp::carp("LWP::Protocol::$proto is unavailable. Skip registering overrides for it.") if $^W;
+    # register this guy (as well as saving original code) once
+    if (! scalar keys %orig) {
+        for my $proto (@protocols) {
+            if (my $orig = LWP::Protocol::implementor($proto)) {
+                $orig{$proto} = $orig;
+                LWP::Protocol::implementor($proto, $class);
+            } else {
+                Carp::carp("LWP::Protocol::$proto is unavailable. Skip registering overrides for it.") if $^W;
+            }
         }
     }
 
     if (defined wantarray) {
-        return guard { $class->unregister; %options = () };
+        return guard {
+            $class->unregister_app($app);
+        };
     }
 }
+
+sub unregister_app {
+    my ($class, $app) = @_;
+
+    my $i = 0;
+    foreach my $stored_app (@apps) {
+        if ($app == $stored_app) {
+            splice @apps, $i, 1;
+            return;
+        }
+        $i++;
+    }
+}
+            
 
 sub unregister {
     my $class = shift;
@@ -42,14 +60,15 @@ sub unregister {
             LWP::Protocol::implementor($proto, $orig{$proto});
         }
     }
+    @apps = ();
 }
 
 sub request {
     my($self, $request) = @_;
 
-    if ($self->handles($request)) {
+    if (my $app = $self->handles($request)) {
         my $env = req_to_psgi $request;
-        res_from_psgi $app->($env);
+        res_from_psgi $app->app->($env);
     } else {
         $orig{$self->{scheme}}->new($self->{scheme}, $self->{ua})->request($request);
     }
@@ -57,18 +76,40 @@ sub request {
 
 # for testing
 sub create {
-    my($class, %opt) = @_;
-    %options = %opt;
+    my $class = shift;
+    push @apps, LWP::Protocol::PSGI::App->new(@_);
     $class->new;
 }
 
 sub handles {
     my($self, $request) = @_;
 
-    if ($options{host}) {
-        $self->_matcher($options{host})->($request->uri->host);
-    } elsif ($options{uri}) {
-        $self->_matcher($options{uri})->($request->uri);
+    foreach my $app (@apps) {
+        if ($app->match($request)) {
+            return $app;
+        }
+    }
+}
+
+package
+    LWP::Protocol::PSGI::App;
+use strict;
+
+sub new {
+    my ($class, $app, %options) = @_;
+    bless { app => $app, options => \%options }, $class;
+}
+
+sub app { $_[0]->{app} }
+sub options { $_[0]->{options} }
+sub match {
+    my ($self, $request) = @_;
+    my $options = $self->options;
+
+    if ($options->{host}) {
+        $self->_matcher($options->{host})->($request->uri->host);
+    } elsif ($options->{uri}) {
+        $self->_matcher($options->{uri})->($request->uri);
     } else {
         1;
     }
@@ -83,7 +124,7 @@ sub _matcher {
     } elsif (!ref $stuff) {
         sub { $_[0] eq $stuff };
     } else {
-        croak "Don't know how to match: ", ref $stuff;
+        Carp::croak("Don't know how to match: ", ref $stuff);
     }
 }
 
