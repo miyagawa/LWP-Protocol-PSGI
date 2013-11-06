@@ -137,7 +137,7 @@ __END__
 
 =head1 NAME
 
-LWP::Protocol::PSGI - Override LWP's HTTP/HTTPS backend with your own PSGI applciation
+LWP::Protocol::PSGI - Override LWP's HTTP/HTTPS backend with your own PSGI application
 
 =head1 SYNOPSIS
 
