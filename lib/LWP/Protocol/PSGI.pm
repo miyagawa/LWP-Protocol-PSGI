@@ -144,10 +144,10 @@ LWP::Protocol::PSGI - Override LWP's HTTP/HTTPS backend with your own PSGI appli
   use LWP::UserAgent;
   use LWP::Protocol::PSGI;
 
-  # can be Mojolicious, Catalyst ... any PSGI application
+  # can be Dancer2, Mojolicious, Catalyst ... any PSGI application
   my $psgi_app = do {
       use Dancer;
-      setting apphandler => 'PSGI';
+      set apphandler => 'PSGI';
       get '/search' => sub {
           return 'googling ' . params->{q};
       };
