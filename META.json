@@ -1,10 +1,10 @@
 {
-   "abstract" : "Override LWP's HTTP/HTTPS backend with your own PSGI applciation",
+   "abstract" : "Override LWP's HTTP/HTTPS backend with your own PSGI application",
    "author" : [
       "Tatsuhiko Miyagawa <miyagawa@bulknews.net>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Milla version v1.0.2, Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.131560",
+   "generated_by" : "Dist::Milla version v1.0.5, Dist::Zilla version 5.017, CPAN::Meta::Converter version 2.141170",
    "license" : [
       "perl_5"
    ],
@@ -26,7 +26,7 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "Module::Build::Tiny" : "0.023"
+            "Module::Build::Tiny" : "0.036"
          }
       },
       "develop" : {
@@ -63,9 +63,11 @@
          "web" : "https://github.com/miyagawa/LWP-Protocol-PSGI"
       }
    },
-   "version" : "0.06",
+   "version" : "0.07",
    "x_contributors" : [
       "Daisuke Maki <lestrrat+github@gmail.com>",
+      "David Steinbrunner <dsteinbrunner@pobox.com>",
+      "Sawyer X <xsawyerx@cpan.org>",
       "Syohei YOSHIDA <syohex@gmail.com>"
    ]
 }

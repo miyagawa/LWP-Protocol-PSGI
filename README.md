@@ -1,16 +1,16 @@
 # NAME
 
-LWP::Protocol::PSGI - Override LWP's HTTP/HTTPS backend with your own PSGI applciation
+LWP::Protocol::PSGI - Override LWP's HTTP/HTTPS backend with your own PSGI application
 
 # SYNOPSIS
 
     use LWP::UserAgent;
     use LWP::Protocol::PSGI;
 
-    # can be Mojolicious, Catalyst ... any PSGI application
+    # can be Mojolicious, Catalyst, Dancer2 or any PSGI application
     my $psgi_app = do {
         use Dancer;
-        setting apphandler => 'PSGI';
+        set apphandler => 'PSGI';
         get '/search' => sub {
             return 'googling ' . params->{q};
         };
@@ -34,12 +34,12 @@ LWP::Protocol::PSGI - Override LWP's HTTP/HTTPS backend with your own PSGI applc
 
 # DESCRIPTION
 
-LWP::Protocol::PSGI is a module to hijack __any__ code that uses
-[LWP::UserAgent](http://search.cpan.org/perldoc?LWP::UserAgent) underneath such that any HTTP or HTTPS requests can
+LWP::Protocol::PSGI is a module to hijack **any** code that uses
+[LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent) underneath such that any HTTP or HTTPS requests can
 be routed to your own PSGI application.
 
 Because it works with any code that uses LWP, you can override various
-WWW::\*, Net::\* or WebService::\* modules such as [WWW::Mechanize](http://search.cpan.org/perldoc?WWW::Mechanize),
+WWW::\*, Net::\* or WebService::\* modules such as [WWW::Mechanize](https://metacpan.org/pod/WWW::Mechanize),
 without modifying the calling code or its internals.
 
     use WWW::Mechanize;
@@ -58,7 +58,7 @@ without modifying the calling code or its internals.
         my $guard = LWP::Protocol::PSGI->register($app, %options);
 
     Registers an override hook to hijack HTTP requests. If called in a
-    non-void context, returns a [Guard](http://search.cpan.org/perldoc?Guard) object that automatically resets
+    non-void context, returns a [Guard](https://metacpan.org/pod/Guard) object that automatically resets
     the override when it goes out of context.
 
         {
@@ -105,7 +105,7 @@ as manipulating headers and parsing cookies.
 
 ## Test::LWP::UserAgent
 
-[Test::LWP::UserAgent](http://search.cpan.org/perldoc?Test::LWP::UserAgent) has the similar concept of overriding LWP
+[Test::LWP::UserAgent](https://metacpan.org/pod/Test::LWP::UserAgent) has the similar concept of overriding LWP
 request method with particular PSGI applications. It has more features
 and options such as passing through the requests to the native LWP
 handler, while LWP::Protocol::PSGI only allows to map certain hosts
@@ -139,4 +139,4 @@ it under the same terms as Perl itself.
 
 # SEE ALSO
 
-[Plack::Client](http://search.cpan.org/perldoc?Plack::Client) [LWP::UserAgent](http://search.cpan.org/perldoc?LWP::UserAgent)
+[Plack::Client](https://metacpan.org/pod/Plack::Client) [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent)

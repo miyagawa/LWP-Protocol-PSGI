@@ -2,6 +2,10 @@ Revision history for Perl extension LWP::Protocol::PSGI
 
 {{$NEXT}}
 
+0.07  2014-05-19 12:42:49 PDT
+        - Update documentation (dsteinbrunner, sawyerx)
+        - Remove some dependencies (syohex)
+
 0.06  2013-06-21 00:32:11 PDT
         - Fix unnecessary dependency (syohex)
 
