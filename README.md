@@ -25,7 +25,7 @@ LWP::Protocol::PSGI - Override LWP's HTTP/HTTPS backend with your own PSGI appli
     my $res = $ua->get("http://www.google.com/search?q=bar");
     print $res->content; # "googling bar"
 
-    # Only hijacks specific hosts
+    # Only hijacks specific host (and port)
     LWP::Protocol::PSGI->register($psgi_app, host => 'localhost:3000');
 
     my $ua = LWP::UserAgent->new;
@@ -126,7 +126,7 @@ code or CPAN modules.
 
 # AUTHOR
 
-Tatsuhiko Miyagawa <miyagawa@bulknews.net>
+Tatsuhiko Miyagawa &lt;miyagawa@bulknews.net>
 
 # COPYRIGHT
 
