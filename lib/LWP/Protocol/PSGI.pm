@@ -107,7 +107,8 @@ sub match {
     my $options = $self->options;
 
     if ($options->{host}) {
-        $self->_matcher($options->{host})->($request->uri->host);
+        my $matcher = $self->_matcher($options->{host});
+        $matcher->($request->uri->host) || $matcher->($request->uri->host_port);
     } elsif ($options->{uri}) {
         $self->_matcher($options->{uri})->($request->uri);
     } else {
