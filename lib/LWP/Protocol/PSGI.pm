@@ -158,29 +158,29 @@ LWP::Protocol::PSGI - Override LWP's HTTP/HTTPS backend with your own PSGI appli
   use LWP::UserAgent;
   use LWP::Protocol::PSGI;
 
-  # can be Mojolicious, Catalyst, Dancer2 or any PSGI application
-  my $psgi_app = do {
+  # $app can be any PSGI application: Mojolicious, Catalyst or your own
+  my $app = do {
       use Dancer;
       set apphandler => 'PSGI';
       get '/search' => sub {
-          return 'googling ' . params->{q};
+          return 'searching for ' . params->{q};
       };
       dance;
   };
 
-  # Register the $psgi_app to handle all LWP requests
-  LWP::Protocol::PSGI->register($psgi_app);
+  # Register the $app to handle all LWP requests
+  LWP::Protocol::PSGI->register($app);
 
   # can hijack any code or module that uses LWP::UserAgent underneath, with no changes
   my $ua  = LWP::UserAgent->new;
   my $res = $ua->get("http://www.google.com/search?q=bar");
-  print $res->content; # "googling bar"
+  print $res->content; # "searching for bar"
 
   # Only hijacks specific host (and port)
   LWP::Protocol::PSGI->register($psgi_app, host => 'localhost:3000');
 
   my $ua = LWP::UserAgent->new;
-  $ua->get("http://localhost:3000/app"); # this routes $psgi_app
+  $ua->get("http://localhost:3000/app"); # this routes $app
   $ua->get("http://google.com/api");     # this doesn't - handled with actual HTTP requests
 
 =head1 DESCRIPTION
@@ -200,6 +200,43 @@ without modifying the calling code or its internals.
 
   my $mech = WWW::Mechanize->new;
   $mech->get("http://amazon.com/"); # $my_psgi_app runs
+
+=head1 TESTING
+
+This module is extremely handy if you have tests that run HTTP
+requests against your application and want them to work with both
+internal and external instances.
+
+  # in your .t file
+  use Test::More;
+  use LWP::UserAgent;
+
+  unless ($ENV{TEST_LIVE}) {
+      require LWP::Protocol::PSGI;
+      my $app = Plack::Util::load_psgi("app.psgi");
+      LWP::Protocol::PSGI->register($app);
+  }
+
+  my $ua = LWP::UserAgent->new;
+  my $res = $ua->get("http://myapp.example.com/");
+  is $res->code, 200;
+  like $res->content, qr/Hello/;
+
+This test script will by default route all HTTP requests to your own
+PSGI app defined in C<$app>, but with the environment variable
+C<TEST_LIVE> set, runs the requests against the live server.
+
+You can also combine L<Plack::App::Proxy> with L<LWP::Protocol::PSGI>
+to route all requests made in your test aginst a specific server.
+
+  use LWP::Protocol::PSGI;
+  use Plack::App::Proxy;
+
+  my $app = Plack::App::Proxy->new(remote => "http://testapp.local:3000")->to_app;
+  LWP::Protocol::PSGI->register($app);
+
+  my $ua = LWP::UserAgent->new;
+  my $res = $ua->request("http://testapp.com"); # this hits testapp.local:3000
 
 =head1 METHODS
 
