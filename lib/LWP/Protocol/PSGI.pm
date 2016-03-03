@@ -6,7 +6,6 @@ our $VERSION = '0.08';
 
 use parent qw(LWP::Protocol);
 use HTTP::Message::PSGI qw( req_to_psgi res_from_psgi );
-use Guard;
 use Carp;
 
 my @protocols = qw( http https );
@@ -33,9 +32,9 @@ sub register {
     }
 
     if (defined wantarray) {
-        return guard {
+        return LWP::Protocol::PSGI::Guard->new(sub {
             $class->unregister_app($app);
-        };
+        });
     }
 }
 
@@ -89,6 +88,20 @@ sub handles {
             return $app;
         }
     }
+}
+
+package
+  LWP::Protocol::PSGI::Guard;
+use strict;
+
+sub new {
+    my($class, $code) = @_;
+    bless $code, $class;
+}
+
+sub DESTROY {
+    my $self = shift;
+    $self->();
 }
 
 package
@@ -198,7 +211,7 @@ without modifying the calling code or its internals.
   my $guard = LWP::Protocol::PSGI->register($app, %options);
 
 Registers an override hook to hijack HTTP requests. If called in a
-non-void context, returns a L<Guard> object that automatically resets
+non-void context, returns a guard object that automatically resets
 the override when it goes out of context.
 
   {

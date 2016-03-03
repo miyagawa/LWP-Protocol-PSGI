@@ -1,4 +1,3 @@
-requires 'Guard';
 requires 'HTTP::Message::PSGI';
 requires 'LWP', '5';
 requires 'LWP::Protocol';
