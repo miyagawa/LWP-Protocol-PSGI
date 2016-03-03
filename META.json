@@ -4,7 +4,7 @@
       "Tatsuhiko Miyagawa <miyagawa@bulknews.net>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 5.039, Dist::Milla version v1.0.15, CPAN::Meta::Converter version 2.150001",
+   "generated_by" : "Dist::Zilla version 5.043, Dist::Milla version v1.0.15, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "perl_5"
    ],
@@ -15,12 +15,12 @@
    "name" : "LWP-Protocol-PSGI",
    "no_index" : {
       "directory" : [
-         "t",
-         "xt",
+         "eg",
+         "examples",
          "inc",
          "share",
-         "eg",
-         "examples"
+         "t",
+         "xt"
       ]
    },
    "prereqs" : {
@@ -37,7 +37,6 @@
       },
       "runtime" : {
          "requires" : {
-            "Guard" : "0",
             "HTTP::Message::PSGI" : "0",
             "LWP" : "5",
             "LWP::Protocol" : "0",
@@ -64,7 +63,7 @@
          "web" : "https://github.com/miyagawa/LWP-Protocol-PSGI"
       }
    },
-   "version" : "0.08",
+   "version" : "0.09",
    "x_contributors" : [
       "Daisuke Maki <lestrrat+github@gmail.com>",
       "David Steinbrunner <dsteinbrunner@pobox.com>",

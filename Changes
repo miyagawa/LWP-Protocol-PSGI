@@ -2,6 +2,10 @@ Revision history for Perl extension LWP::Protocol::PSGI
 
 {{$NEXT}}
 
+0.09  2016-03-03 08:58:44 PST
+        - Update documentation
+        - Remove Guard dependency
+
 0.08  2015-10-07 13:17:29 PDT
         - Fix a bug where "host" matcher doesn't match if port number is included
 
