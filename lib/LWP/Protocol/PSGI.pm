@@ -7,6 +7,7 @@ our $VERSION = '0.09';
 use parent qw(LWP::Protocol);
 use HTTP::Message::PSGI qw( req_to_psgi res_from_psgi );
 use Carp;
+use Socket;
 
 my @protocols = qw( http https );
 my %orig;
@@ -67,10 +68,31 @@ sub request {
 
     if (my $app = $self->handles($request)) {
         my $env = req_to_psgi $request;
+        $self->fill_in_host_addr($env);
         res_from_psgi $app->app->($env);
     } else {
         $orig{$self->{scheme}}->new($self->{scheme}, $self->{ua})->request($request);
     }
+}
+
+sub fill_in_host_addr {
+    my ($self, $env) = @_;
+    my $addr = $self->{ua}{local_address} or return;
+
+    if ($addr !~ /[a-z]/i) {
+        # Just an IP, maybe
+        $env->{REMOTE_ADDR} = $addr;
+
+        return;
+    }
+
+    $env->{REMOTE_HOST} = $addr;
+
+    if (defined (my $pip = gethostbyname($addr))) {
+        $env->{REMOTE_ADDR} = inet_ntoa($pip);
+    }
+
+    return;
 }
 
 # for testing
