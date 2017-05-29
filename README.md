@@ -163,7 +163,7 @@ code or CPAN modules.
 
 # AUTHOR
 
-Tatsuhiko Miyagawa &lt;miyagawa@bulknews.net>
+Tatsuhiko Miyagawa <miyagawa@bulknews.net>
 
 # COPYRIGHT
 
