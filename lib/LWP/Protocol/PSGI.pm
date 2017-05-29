@@ -63,13 +63,16 @@ sub unregister {
 }
 
 sub request {
-    my($self, $request) = @_;
+    my($self, $request, $proxy, $arg, @rest) = @_;
 
     if (my $app = $self->handles($request)) {
         my $env = req_to_psgi $request;
-        res_from_psgi $app->app->($env);
+        my $response = res_from_psgi $app->app->($env);
+        my $content = $response->content;
+        $response->content('');
+        $self->collect_once($arg, $response, $content);
     } else {
-        $orig{$self->{scheme}}->new($self->{scheme}, $self->{ua})->request($request);
+        $orig{$self->{scheme}}->new($self->{scheme}, $self->{ua})->request($request, $proxy, $arg, @rest);
     }
 }
 
