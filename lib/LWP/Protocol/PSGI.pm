@@ -230,7 +230,7 @@ PSGI app defined in C<$app>, but with the environment variable
 C<TEST_LIVE> set, runs the requests against the live server.
 
 You can also combine L<Plack::App::Proxy> with L<LWP::Protocol::PSGI>
-to route all requests made in your test aginst a specific server.
+to route all requests made in your test against a specific server.
 
   use LWP::Protocol::PSGI;
   use Plack::App::Proxy;
@@ -303,7 +303,7 @@ as manipulating headers and parsing cookies.
 L<Test::LWP::UserAgent> has the similar concept of overriding LWP
 request method with particular PSGI applications. It has more features
 and options such as passing through the requests to the native LWP
-handler, while LWP::Protocol::PSGI only allows to map certain hosts
+handler, while LWP::Protocol::PSGI only allows one to map certain hosts
 and ports.
 
 Test::LWP::UserAgent requires you to change the instantiation of
