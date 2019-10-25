@@ -38,12 +38,16 @@ subtest "when registered" => sub {
 LWP::Protocol::PSGI->unregister;
 
 subtest "when unregistered" => sub {
-    my $res = $ua->get("http://www.google.com/search?q=bar");
-    isnt $res->content, "query=q=bar";
-    isnt $res->header('X-Foo'), "bar";
+ SKIP: {
+        skip "needs internet access", 3 unless $ENV{AUTHOR_TESTING};
 
-    my $body = get "http://www.google.com/?q=x";
-    isnt $body, "query=q=x";
+        my $res = $ua->get("http://www.google.com/search?q=bar");
+        isnt $res->content, "query=q=bar";
+        isnt $res->header('X-Foo'), "bar";
+
+        my $body = get "http://www.google.com/?q=x";
+        isnt $body, "query=q=x";
+    }
 };
 
 LWP::Protocol::PSGI->register($psgi_app);
