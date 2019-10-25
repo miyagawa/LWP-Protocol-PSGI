@@ -76,7 +76,7 @@ PSGI app defined in `$app`, but with the environment variable
 `TEST_LIVE` set, runs the requests against the live server.
 
 You can also combine [Plack::App::Proxy](https://metacpan.org/pod/Plack::App::Proxy) with [LWP::Protocol::PSGI](https://metacpan.org/pod/LWP::Protocol::PSGI)
-to route all requests made in your test aginst a specific server.
+to route all requests made in your test against a specific server.
 
     use LWP::Protocol::PSGI;
     use Plack::App::Proxy;
@@ -145,7 +145,7 @@ as manipulating headers and parsing cookies.
 [Test::LWP::UserAgent](https://metacpan.org/pod/Test::LWP::UserAgent) has the similar concept of overriding LWP
 request method with particular PSGI applications. It has more features
 and options such as passing through the requests to the native LWP
-handler, while LWP::Protocol::PSGI only allows to map certain hosts
+handler, while LWP::Protocol::PSGI only allows one to map certain hosts
 and ports.
 
 Test::LWP::UserAgent requires you to change the instantiation of
