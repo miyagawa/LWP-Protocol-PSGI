@@ -60,6 +60,7 @@ sub unregister {
         }
     }
     @apps = ();
+    %orig = ();
 }
 
 sub request {
