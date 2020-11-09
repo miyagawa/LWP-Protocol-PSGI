@@ -1,5 +1,10 @@
 sudo: false
 language: perl
+
+arch:
+ - amd
+ - ppc64le
+ 
 perl:
   - "5.22"
 env: AUTOMATED_TESTING=1 AUTHOR_TESTING=1
